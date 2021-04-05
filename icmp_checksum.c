@@ -1,3 +1,5 @@
+// Mateusz Szałowski 298976
+
 #include <stdlib.h>
 #include <assert.h>
 
