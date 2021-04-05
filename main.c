@@ -69,7 +69,7 @@ int main(int argc, char** argv)
         char response_sender_ip[20];
         bool if_received_packets[3] = {false, false, false};
         int rtts[3];
-        struct timeval timeout; timeout.tv_sec = 1; timeout.tv_usec = 0;
+        struct timeval timeout; timeout.tv_sec = 0; timeout.tv_usec = 333333;
         for (int packet_nr=0; packet_nr<3; packet_nr++) {
 
             fd_set descriptors;
@@ -86,8 +86,6 @@ int main(int argc, char** argv)
                 continue;
             }
             else {
-
-                
 
                 struct IcmpHeaderAndSenderIP* packet_with_sender = get_icmp_with_sender_from_socket(sockfd);
                 if (packet_with_sender == NULL) {
@@ -117,7 +115,7 @@ int main(int argc, char** argv)
                     if (sent_icmp_header->icmp_type == ICMP_ECHO) {
 
                         if (sent_icmp_header->icmp_id == getpid()) {
-                            uint16_t sequential_id = sent_icmp_header->icmp_hun.ih_idseq.icd_seq;
+                            uint16_t sequential_id = sent_icmp_header->icmp_seq;
                             if_received_packets[sequential_id-1] = true;
 
                             timersub(&now, &send_times[sequential_id-1], &rtt);
@@ -134,7 +132,7 @@ int main(int argc, char** argv)
 
                     if (icmp_header->icmp_id == getpid()) {
                         got_echo_reply = true;
-                        uint16_t sequential_id = icmp_header->icmp_hun.ih_idseq.icd_seq;
+                        uint16_t sequential_id = icmp_header->icmp_seq;
 
                         if_received_packets[sequential_id-1] = true;
 

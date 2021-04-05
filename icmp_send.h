@@ -5,7 +5,7 @@
 
 struct icmp create_icmp_echo_request (uint16_t seq_number);
 
-struct sockaddr_in create_address_structure (char* recipient_ip);
+struct sockaddr_in ip2sockaddr_in (char* recipient_ip);
 
 void send_icmp_echo_request (
     int sockfd,

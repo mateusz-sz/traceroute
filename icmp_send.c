@@ -24,7 +24,7 @@ struct icmp create_icmp_echo_request (uint16_t seq_number)
     return header;
 }
 
-struct sockaddr_in create_address_structure (char* recipient_ip)
+struct sockaddr_in ip2sockaddr_in (char* recipient_ip)
 {
     struct sockaddr_in recipient;
     bzero (&recipient, sizeof(recipient));
@@ -36,16 +36,13 @@ struct sockaddr_in create_address_structure (char* recipient_ip)
 
 void send_icmp_echo_request (int sockfd, int ttl, char* recipient_ip, uint16_t sequential_number)
 {
-    // Create address structure
-    struct sockaddr_in recipient = create_address_structure(recipient_ip);
+    struct sockaddr_in recipient = ip2sockaddr_in(recipient_ip);
 
-    // Set TTL
     int ttl_set = setsockopt(sockfd, IPPROTO_IP, IP_TTL, &ttl, sizeof(int));
     if (ttl_set < 0) {
         handle_error("setsockopt error");
     }
 
-    // Create and send ICMP packet
     struct icmp packet = create_icmp_echo_request(sequential_number);
     ssize_t bytes_sent = sendto(
         sockfd,
